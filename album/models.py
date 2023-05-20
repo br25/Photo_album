@@ -5,20 +5,21 @@ from django.utils.translation import gettext_lazy as _
 
 class Album(models.Model):
     class Category(models.TextChoices):
-        FAMILY = 'FM', _('Family')
-        FRIEND = 'FD', _('Friend')
+        PRIVATE = 'PR', _('Private')
+        PUBLIC = 'PB', _('Public')
 
     name = models.CharField(max_length=255)
     description = models.TextField()
     category = models.CharField(
         max_length=2,
         choices=Category.choices,
-        default=Category.FAMILY,
+        default=Category.PUBLIC,
     )
-    is_private = models.BooleanField(default=False)
+    is_published = models.BooleanField(default=True)
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='albums')
 
+    photos = models.ManyToManyField('Photo', related_name='albums')
 
     def __str__(self):
         return self.name
