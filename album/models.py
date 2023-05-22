@@ -15,7 +15,6 @@ class Album(models.Model):
         choices=Category.choices,
         default=Category.PUBLIC,
     )
-    is_published = models.BooleanField(default=True)
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='albums')
 

@@ -6,18 +6,31 @@ from .models import Album, Photo
 from .serializers import AlbumSerializer, AlbumSerializer, PhotoSerializer
 from .permission import IsOwner
 
+from auth_app.models import User
 
 
 class PublicAlbumList(generics.ListCreateAPIView):
-    queryset = Album.objects.filter(is_published=True)
+    queryset = Album.objects.filter(category="PB")
     serializer_class = AlbumSerializer
 
     def perform_create(self, serializer):
         serializer.save()
 
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        serialized_data = response.data
+
+        # Modify serialized_data to include author username
+        for data in serialized_data:
+            author_id = data['author']
+            user = User.objects.get(id=author_id)
+            data['author'] = user.email
+
+        response.data = serialized_data
+        return response
 
 class PrivateAlbumList(generics.ListCreateAPIView):
-    queryset = Album.objects.filter(is_published=False)
+    queryset = Album.objects.filter(category="PR")
     serializer_class = AlbumSerializer
     # authentication_classes = [SessionAuthentication]
     # permission_classes = [IsAuthenticated]

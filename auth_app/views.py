@@ -17,6 +17,14 @@ class UserView(generics.ListAPIView):
             queryset = queryset.filter(is_verified=is_verified)
         return queryset
 
+    def get(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serialized_data = self.get_serializer(queryset, many=True).data
+
+        for data in serialized_data:
+            data['full_name'] = f"{data['first_name']} {data['last_name']}"
+
+        return Response(serialized_data)
 
 class RegistrationView(generics.CreateAPIView):
     serializer_class = UserSerializer
