@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Album, Photo
-from drf_extra_fields.fields import Base64ImageField
+from rest_framework.exceptions import PermissionDenied
 from django.db import transaction
 
 
@@ -12,11 +12,15 @@ class PhotoSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'image', 'created', 'author', 'album')
         read_only_fields = ('created', 'author')
 
+
     def create(self, validated_data):
-        user = self.context['request'].user
-        author = validated_data.pop('author', None)
+        request = self.context['request']
+        user = request.user
+        if user.is_anonymous:
+            raise PermissionDenied("Only authenticated users can create photos.")
+
         album = validated_data.pop('album')
-        return Photo.objects.create(author=author or user, album=album, **validated_data)
+        return Photo.objects.create(author=user, album=album, **validated_data)
 
 
 

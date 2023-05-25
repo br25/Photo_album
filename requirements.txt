@@ -6,6 +6,7 @@ coreschema==0.0.4
 Django==4.2
 django-rest-framework==0.1.0
 djangorestframework==3.14.0
+djangorestframework-simplejwt==5.2.2
 drf-extra-fields==3.4.1
 drf-yasg==1.21.5
 idna==3.4
@@ -15,6 +16,7 @@ Jinja2==3.1.2
 MarkupSafe==2.1.2
 packaging==23.0
 Pillow==9.5.0
+PyJWT==2.7.0
 pytz==2023.3
 requests==2.28.2
 ruamel.yaml==0.17.21
